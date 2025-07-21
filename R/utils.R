@@ -158,6 +158,9 @@ to_gif <- function (r, fps = 5, width = 600, height = 600,
 #' @param year numeric. (required) The year of interest.
 #' @param time Character vector of length 2. (optional) Start and end dates in `"MM-DD"` format
 #' (e.g., `c("03-20", "10-15")`). Used to subset the 10-day interval data cube by time.
+#'
+#' @return Interger. a band index.
+#'
 #' @examples
 #' get_band_index_by_time(c("03-20", "10-15"), year = 2020)
 #'
@@ -352,7 +355,7 @@ download_sentinel <- function (bbox, start_date, end_date,
                                cloud_cover = 10, vege_perc = 0) {
   original_timeout <- getOption('timeout')
   options(timeout=9999)
-  on.exit(options(timeout = original_timeout), add = TRUE)
+  on.exit(options(timeout = original_timeout))
 
   bbox <- as.vector(sf::st_bbox(bbox))
   polygon <- list(
@@ -498,10 +501,11 @@ compute_landscape_metrics_parallel <- function(r,
                                                                 "gyrate", "circle", "cai"),
                                                progress = FALSE) {
   raster_path <- tempfile(fileext = ".tif")
-  on.exit(unlink(raster_path))
+  on.exit(unlink(raster_path), add = TRUE)
   terra::writeRaster(r, raster_path, overwrite = TRUE)
-
+  old_plan <- future::plan()
   future::plan(future::multisession, workers = future::availableCores() - 1)
+  on.exit(future::plan(old_plan), add = TRUE)
 
   compute_one_metric <- function(metric_name, raster_path, directions) {
     r_local <- terra::rast(raster_path)

@@ -12,6 +12,9 @@ get_band_index_by_time(time, year)
 
 \item{year}{numeric. (required) The year of interest.}
 }
+\value{
+Interger. a band index.
+}
 \description{
 Converts a date string in \code{"MM-DD"} format to the corresponding band index
 for the Greenspace Seasonality Data Cube, which contains 36 bands representing

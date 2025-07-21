@@ -817,8 +817,8 @@ get_tile_green <- function(bbox = NULL,
 #' | Code | Land Cover Class         | RGB Color        | Description                                                                                     |
 #' |------|--------------------------|------------------|-------------------------------------------------------------------------------------------------|
 #' | 10   | Tree cover               | (0, 100, 0)       | Geographic areas dominated by trees with a cover of 10% or more. Includes plantations, mangroves. |
-#' | 20   | Shrubland                | (255, 187, 34)    | Areas dominated by shrubs with cover ≥10%. Includes evergreen/deciduous.                         |
-#' | 30   | Grassland                | (255, 255, 76)    | Dominated by herbaceous plants with cover ≥10%. Includes savannas, pastures, steppes.           |
+#' | 20   | Shrubland                | (255, 187, 34)    | Areas dominated by shrubs with cover \eqn{\ge 10%}. Includes evergreen/deciduous.                         |
+#' | 30   | Grassland                | (255, 255, 76)    | Dominated by herbaceous plants with cover \eqn{\ge 10%}. Includes savannas, pastures, steppes.           |
 #' | 40   | Cropland                 | (240, 150, 255)   | Areas with annual crops sown/planted and harvested within 12 months.                            |
 #' | 50   | Built-up                 | (250, 0, 0)       | Built environment: buildings, roads, other man-made structures.                                 |
 #' | 60   | Bare/sparse vegetation   | (180, 180, 180)   | Lands with exposed soil/sand/rock and <10% vegetation.                                          |

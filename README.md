@@ -52,9 +52,9 @@ devtools::install_github("billbillbilly/greenSD")
 #### 1 Get data from Greenspace Seasonality Data Cube
 ```r
 # by bounding box
-gs <- greenSD::get_gsdc(place = 'Detroit', year = 2022)
+gs <- greenSD::get_gsdc(bbox = c(-83.087174,42.333373,-83.042542,42.358748), year = 2022)
 # by place name
-gs <- greenSD::get_gsdc(location = c(-83.10215 42.38342), year = 2022)
+gs <- greenSD::get_gsdc(place = 'Detroit', year = 2022)
 # by coordinates (point)
 gs <- greenSD::get_gsdc(location = c(-83.10215 42.38342), year = 2022)
 # by UID and time range

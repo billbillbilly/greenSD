@@ -83,8 +83,8 @@ as ESA WorldCover dataset with additional class of building (See details).
 This function uses ESA WorldCover classification with additional class of building :\tabular{llll}{
    Code \tab Land Cover Class \tab RGB Color \tab Description \cr
    10 \tab Tree cover \tab (0, 100, 0) \tab Geographic areas dominated by trees with a cover of 10\% or more. Includes plantations, mangroves. \cr
-   20 \tab Shrubland \tab (255, 187, 34) \tab Areas dominated by shrubs with cover ≥10\%. Includes evergreen/deciduous. \cr
-   30 \tab Grassland \tab (255, 255, 76) \tab Dominated by herbaceous plants with cover ≥10\%. Includes savannas, pastures, steppes. \cr
+   20 \tab Shrubland \tab (255, 187, 34) \tab Areas dominated by shrubs with cover \eqn{\ge 10\%}. Includes evergreen/deciduous. \cr
+   30 \tab Grassland \tab (255, 255, 76) \tab Dominated by herbaceous plants with cover \eqn{\ge 10\%}. Includes savannas, pastures, steppes. \cr
    40 \tab Cropland \tab (240, 150, 255) \tab Areas with annual crops sown/planted and harvested within 12 months. \cr
    50 \tab Built-up \tab (250, 0, 0) \tab Built environment: buildings, roads, other man-made structures. \cr
    60 \tab Bare/sparse vegetation \tab (180, 180, 180) \tab Lands with exposed soil/sand/rock and <10\% vegetation. \cr
