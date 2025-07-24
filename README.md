@@ -125,13 +125,13 @@ sem <- greenSD::lc_sem_seg(bbox = c(-83.087174,42.333373,-83.042542,42.358748),
 sample_data <- terra::rast(system.file("extdata", "detroit_gs.tif", package = "greenSD"))
 
 # population-weighted greenspace fraction
-pwgf <- greenSD::pop_weg(
+pwgf <- greenSD::compute_exposure(
       r = sample_data,
       pop_year = 2020,
       radius = 500)
 
 # population-weighted greenspace exposure
-pwge <- greenSD::pop_weg(
+pwge <- greenSD::compute_exposure(
       r = sample_data,
       pop_year = 2020,
       radius = 500, 
