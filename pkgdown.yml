@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   data_analysis: data_analysis.html
   get_data: get_data.html
-last_built: 2025-10-26T06:52Z
+last_built: 2025-10-26T06:59Z
 urls:
   reference: https://billbillbilly.github.io/greenSD/reference
   article: https://billbillbilly.github.io/greenSD/articles
