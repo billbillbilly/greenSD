@@ -11,5 +11,5 @@ p <- terra::ifel(green$green == 0, NA, 1)
 ```
 
 ```{r}
-m <- compute_morphology(p, grid_size = 800)
+m <- greenSD::compute_morphology(p, grid_size = 800)
 ```
