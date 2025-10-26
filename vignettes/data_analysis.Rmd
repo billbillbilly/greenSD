@@ -8,7 +8,8 @@ vignette: >
 ---
 
 ```{r eval=FALSE}
-ndvi <- greenSD::get_esa_wc(bbox = c(-83.087174,42.333373,-83.042542,42.358748), datatype = 'ndvi', year = 2021)
+bbox <- c(-83.087174,42.333373,-83.042542,42.358748)
+ndvi <- greenSD::get_esa_wc(bbox = bbox, datatype = 'ndvi', year = 2021)
 seg <- greenSD::ndvi_to_sem(ndvi$NDVI_p50, threshold = c(0.2, 0.6))
 ```
 
