@@ -11,7 +11,8 @@ compute_exposure(
   radius = 500,
   grid_size = NULL,
   height = FALSE,
-  pop_out = FALSE
+  pop_out = FALSE,
+  quiet = TRUE
 )
 }
 \arguments{
@@ -36,6 +37,8 @@ greenspace fraction or human exposure to greenspace using Meta's global canopy
 height map (Tolan et al., 2024). (The default is FALSE)}
 
 \item{pop_out}{logical. Whether return population layer.}
+
+\item{quiet}{logical. Whether show progress bars for some process.}
 }
 \value{
 SpatRaster or sf. A \code{SpatRaster} (if \code{grid_size} is \code{NULL}) with
@@ -69,7 +72,6 @@ pwgf <- compute_exposure(
   pop_year = 2020,
   radius = 1500
 )
-
 }
 \references{
 Chen, B., Wu, S., Song, Y. et al. Contrasting inequality in human exposure to

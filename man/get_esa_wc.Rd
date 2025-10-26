@@ -10,7 +10,8 @@ get_esa_wc(
   place = NULL,
   datatype = "landcover",
   year = 2021,
-  mask = TRUE
+  mask = TRUE,
+  quiet = TRUE
 )
 }
 \arguments{
@@ -27,6 +28,8 @@ e.g. ("1600 Pennsylvania Ave NW, Washington") or a vector of addresses
 
 \item{mask}{logical (optional). Default is \code{TRUE}. If \code{TRUE}, masks the
 raster data using the given \code{bbox} or \code{place}.}
+
+\item{quiet}{logical. Whether show progress bars for some process.}
 }
 \value{
 A \code{SpatRaster} object containing 11-class land cover or NDVI

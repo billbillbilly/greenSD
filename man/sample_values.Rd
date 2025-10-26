@@ -13,7 +13,8 @@ sample_values(
   cloud_cover = 10,
   vege_perc = 0,
   select = "latest",
-  method = "first"
+  method = "first",
+  quiet = TRUE
 )
 }
 \arguments{
@@ -45,6 +46,8 @@ is "latest".}
 \item{method}{character. A method for mosaicing layers: one of "mean",
 "median", "min", "max", "modal", "sum", "first", "last". The default
 is "first".}
+
+\item{quiet}{logical. Whether show progress bars for some process.}
 }
 \value{
 A \code{data.frame} containing greenspace values extracted at each point
