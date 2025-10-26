@@ -11,7 +11,7 @@ by Zanaga et al. (2021), or Sentinel-2-l2a images."><meta property="og:image" co
 
     <a class="navbar-brand me-2" href="../index.html">greenSD</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,7 +56,8 @@ by Zanaga et al. (2021), or Sentinel-2-l2a images.</p>
 <span>  cloud_cover <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  vege_perc <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  select <span class="op">=</span> <span class="st">"latest"</span>,</span>
-<span>  method <span class="op">=</span> <span class="st">"first"</span></span>
+<span>  method <span class="op">=</span> <span class="st">"first"</span>,</span>
+<span>  quiet <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -107,6 +108,10 @@ is "latest".</p></dd>
 <dd><p>character. A method for mosaicing layers: one of "mean",
 "median", "min", "max", "modal", "sum", "first", "last". The default
 is "first".</p></dd>
+
+
+<dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>
+<dd><p>logical. Whether show progress bars for some process.</p></dd>
 
 </dl></div>
     <div class="section level2">

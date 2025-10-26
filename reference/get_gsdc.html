@@ -13,7 +13,7 @@ using a bounding box, place name, coordinates, or unique city ID (UID)."><meta p
 
     <a class="navbar-brand me-2" href="../index.html">greenSD</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +58,8 @@ using a bounding box, place name, coordinates, or unique city ID (UID).</p>
 <span>  UID <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  year <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  time <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  mask <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  mask <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  quiet <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -100,6 +101,10 @@ interval data cube by time.</p></dd>
 <dt id="arg-mask">mask<a class="anchor" aria-label="anchor" href="#arg-mask"></a></dt>
 <dd><p>logical (optional). Default is <code>TRUE</code>. If <code>TRUE</code>, masks the
 raster data using the given <code>bbox</code> or <code>place</code> if it is specified.</p></dd>
+
+
+<dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>
+<dd><p>logical. Whether show progress bars for some process.</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -9,7 +9,7 @@ Users can define an area of interest using a bounding box or place name."><meta 
 
     <a class="navbar-brand me-2" href="../index.html">greenSD</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,7 +54,8 @@ Users can define an area of interest using a bounding box or place name.</p>
 <span>  select <span class="op">=</span> <span class="st">"latest"</span>,</span>
 <span>  method <span class="op">=</span> <span class="st">"first"</span>,</span>
 <span>  mask <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  output_bands <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  output_bands <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  quiet <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -109,6 +110,10 @@ raster data using the given <code>bbox</code> or <code>place</code>.</p></dd>
 The default is <code>NULL</code>. If <code>output_bands</code> is specified, NDVI will not
 be computed and only the specified bands will be returned.
 All available bands can be found <a href="https://docs.sentinel-hub.com/api/latest/data/sentinel-2-l2a/#available-bands-and-data" class="external-link">here</a></p></dd>
+
+
+<dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>
+<dd><p>logical. Whether show progress bars for some process.</p></dd>
 
 </dl></div>
     <div class="section level2">
