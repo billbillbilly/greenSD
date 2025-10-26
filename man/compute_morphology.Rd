@@ -4,7 +4,7 @@
 \alias{compute_morphology}
 \title{compute_morphology}
 \usage{
-compute_morphology(r = NULL, directions = 4, grid_size = NULL)
+compute_morphology(r = NULL, directions = 4, grid_size = NULL, quiet = TRUE)
 }
 \arguments{
 \item{r}{SpatRaster. A single-band binary greenspace raster, where 0 or NA
@@ -16,6 +16,8 @@ connected: 4 (default) or 8.}
 \item{grid_size}{numeric or sf polygons. (Optional) If specified, morphology metrics
 at grid level will be computed based on the size (in meters) of given grid cells or
 input (sf) polygons.}
+
+\item{quiet}{logical. Whether show progress bars for some process.}
 }
 \value{
 A SpatVector object contains indivisual patches with metrics at patch level,

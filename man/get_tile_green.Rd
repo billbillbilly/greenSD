@@ -9,7 +9,8 @@ get_tile_green(
   place = NULL,
   zoom = 17,
   provider = "esri",
-  year = NULL
+  year = NULL,
+  quiet = TRUE
 )
 }
 \arguments{
@@ -26,6 +27,8 @@ e.g. ("1600 Pennsylvania Ave NW, Washington") or a vector of addresses
 
 \item{year}{integer. The desired year for Sentinel-2 cloudless mosaic
 tiles. (This is required when \code{provider = "eox"})}
+
+\item{quiet}{logical. Whether show progress bars for some process.}
 }
 \value{
 A list of two rasters including: greenspace segmentation (where 1 is

@@ -11,7 +11,8 @@ get_gsdc(
   UID = NULL,
   year = NULL,
   time = NULL,
-  mask = TRUE
+  mask = TRUE,
+  quiet = TRUE
 )
 }
 \arguments{
@@ -36,6 +37,8 @@ interval data cube by time.}
 
 \item{mask}{logical (optional). Default is \code{TRUE}. If \code{TRUE}, masks the
 raster data using the given \code{bbox} or \code{place} if it is specified.}
+
+\item{quiet}{logical. Whether show progress bars for some process.}
 }
 \value{
 A \code{SpatRaster} object containing the greenspace seasonality data.

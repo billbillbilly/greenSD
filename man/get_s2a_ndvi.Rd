@@ -13,7 +13,8 @@ get_s2a_ndvi(
   select = "latest",
   method = "first",
   mask = TRUE,
-  output_bands = NULL
+  output_bands = NULL,
+  quiet = TRUE
 )
 }
 \arguments{
@@ -47,6 +48,8 @@ raster data using the given \code{bbox} or \code{place}.}
 The default is \code{NULL}. If \code{output_bands} is specified, NDVI will not
 be computed and only the specified bands will be returned.
 All available bands can be found \href{https://docs.sentinel-hub.com/api/latest/data/sentinel-2-l2a/#available-bands-and-data}{here}}
+
+\item{quiet}{logical. Whether show progress bars for some process.}
 }
 \value{
 A \code{SpatRaster} object containing (multiple) NDVI layer(s) (for different

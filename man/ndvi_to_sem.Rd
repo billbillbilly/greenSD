@@ -4,7 +4,7 @@
 \alias{ndvi_to_sem}
 \title{ndvi_to_sem}
 \usage{
-ndvi_to_sem(r = NULL, threshold = c(0.2, 0.5))
+ndvi_to_sem(r = NULL, threshold = c(0.2, 0.5), quiet = FALSE)
 }
 \arguments{
 \item{r}{A SpatRaster with single greenspace layer, typically
@@ -16,6 +16,8 @@ for classify two types of vegetation areas according to Hashim et al. (2019):
 (2) Low vegetation (Shrub and grassland): NDVI values generally between \code{0.2} and \code{0.5}.
 (2) High vegetation (Temperate and Tropical urban forest ): NDVI values generally
 between \code{0.5} and \code{1.0}.}
+
+\item{quiet}{logical. Whether show progress bars for some process.}
 }
 \value{
 SpatRaster. A raster, where \code{0} represents non-green area, \code{1} represents
