@@ -33,12 +33,9 @@ VignetteBuilder: knitr
 Imports:
   terra,
   maptiles,
-  overturemapsr,
   sf,
-  parallel,
   future,
   furrr,
-  caret,
   purrr,
   nominatimlite,
   utils,
