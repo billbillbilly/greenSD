@@ -97,36 +97,50 @@ specified area/point of inerest<a class="anchor" aria-label="anchor" href="#donw
 <h4 id="by-uid-and-time-range">By UID and time range<a class="anchor" aria-label="anchor" href="#by-uid-and-time-range"></a>
 </h4>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># greenSD::check_available_cities()</span></span>
+<code class="sourceCode R"><span><span class="co"># check UID </span></span>
+<span><span class="fu">greenSD</span><span class="fu">::</span><span class="fu">check_available_cities</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">gs</span> <span class="op">&lt;-</span> <span class="fu">greenSD</span><span class="fu">::</span><span class="fu"><a href="../reference/get_gsdc.html">get_gsdc</a></span><span class="op">(</span>UID <span class="op">=</span> <span class="fl">1825</span>, year <span class="op">=</span> <span class="fl">2022</span>, time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"03-01"</span>, <span class="st">"09-01"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
+</div>
+<div class="section level2">
+<h2 id="download-esa-worldcover-10m-annual-dataset">Download ESA WorldCover 10m Annual Dataset<a class="anchor" aria-label="anchor" href="#download-esa-worldcover-10m-annual-dataset"></a>
+</h2>
 <div class="section level4">
-<h4 id="get-ndvi-data-by-place-name-from-esa-worldcover-10m-annual-dataset">Get NDVI data by place name from ESA WorldCover 10m Annual
-Dataset<a class="anchor" aria-label="anchor" href="#get-ndvi-data-by-place-name-from-esa-worldcover-10m-annual-dataset"></a>
+<h4 id="get-ndvi-data-by-place-name">Get NDVI data by place name<a class="anchor" aria-label="anchor" href="#get-ndvi-data-by-place-name"></a>
 </h4>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ndvi</span> <span class="op">&lt;-</span> <span class="fu">greenSD</span><span class="fu">::</span><span class="fu"><a href="../reference/get_esa_wc.html">get_esa_wc</a></span><span class="op">(</span>place <span class="op">=</span> <span class="st">'Detroit'</span>, datatype <span class="op">=</span> <span class="st">"ndvi"</span><span class="op">)</span></span></code></pre></div>
 </div>
-</div>
-<div class="section level2">
-<h2 id="get-the-greenspace-segmentation-from-esri-worldimagery-map-tiles">Get the greenspace segmentation from Esri.WorldImagery map
-tiles<a class="anchor" aria-label="anchor" href="#get-the-greenspace-segmentation-from-esri-worldimagery-map-tiles"></a>
-</h2>
+<div class="section level4">
+<h4 id="get-land-cover-data-from-esa-worldcover-10m-dataset">Get land cover data from ESA WorldCover 10m dataset<a class="anchor" aria-label="anchor" href="#get-land-cover-data-from-esa-worldcover-10m-dataset"></a>
+</h4>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">green</span> <span class="op">&lt;-</span> <span class="fu">greenSD</span><span class="fu">::</span><span class="fu"><a href="../reference/get_tile_green.html">get_tile_green</a></span><span class="op">(</span>bbox <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">83.087174</span>,<span class="fl">42.333373</span>,<span class="op">-</span><span class="fl">83.042542</span>,<span class="fl">42.358748</span><span class="op">)</span>, </span>
-<span>                                 provider <span class="op">=</span> <span class="st">"esri"</span>,</span>
-<span>                                 zoom <span class="op">=</span> <span class="fl">16</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">lc</span> <span class="op">&lt;-</span> <span class="fu">greenSD</span><span class="fu">::</span><span class="fu"><a href="../reference/get_esa_wc.html">get_esa_wc</a></span><span class="op">(</span>place <span class="op">=</span> <span class="st">'Detroit'</span>, datatype <span class="op">=</span> <span class="st">"landcover"</span><span class="op">)</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level2">
-<h2 id="generate-finer-resolution-land-cover-data">Generate finer-resolution land cover data<a class="anchor" aria-label="anchor" href="#generate-finer-resolution-land-cover-data"></a>
+<h2 id="retrieve-sentinel-2-l2a-images-and-compute-ndvi">Retrieve Sentinel-2-l2a images and compute NDVI<a class="anchor" aria-label="anchor" href="#retrieve-sentinel-2-l2a-images-and-compute-ndvi"></a>
 </h2>
-<p>This example will take about 15 minutes.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">lc</span> <span class="op">&lt;-</span> <span class="fu">greenSD</span><span class="fu">::</span><span class="fu">lc_sem_seg</span><span class="op">(</span>bbox <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">83.087174</span>,<span class="fl">42.333373</span>,<span class="op">-</span><span class="fl">83.042542</span>,<span class="fl">42.358748</span><span class="op">)</span>, </span>
-<span>                          label_year <span class="op">=</span> <span class="fl">2021</span>,</span>
-<span>                          tiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'esri'</span>, <span class="st">'eox'</span><span class="op">)</span>,</span>
-<span>                          tile_year <span class="op">=</span> <span class="fl">2024</span>,</span>
-<span>                          test <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ndvi</span> <span class="op">&lt;-</span> <span class="fu">greenSD</span><span class="fu">::</span><span class="fu"><a href="../reference/get_s2a_ndvi.html">get_s2a_ndvi</a></span><span class="op">(</span>bbox <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">83.087174</span>,<span class="fl">42.333373</span>,<span class="op">-</span><span class="fl">83.042542</span>,<span class="fl">42.358748</span><span class="op">)</span>, </span>
+<span>                              datetime <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2022-08-01"</span>, <span class="st">"2022-09-01"</span><span class="op">)</span>, </span>
+<span>                              cloud_cover <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>                              output_bands <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="get-the-greenspace-segmentation-from-map-tiles">Get the greenspace segmentation from map tiles<a class="anchor" aria-label="anchor" href="#get-the-greenspace-segmentation-from-map-tiles"></a>
+</h2>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># from Esri.WorldImagery map tiles </span></span>
+<span><span class="va">green</span> <span class="op">&lt;-</span> <span class="fu">greenSD</span><span class="fu">::</span><span class="fu"><a href="../reference/get_tile_green.html">get_tile_green</a></span><span class="op">(</span>bbox <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">83.087174</span>,<span class="fl">42.333373</span>,<span class="op">-</span><span class="fl">83.042542</span>,<span class="fl">42.358748</span><span class="op">)</span>, </span>
+<span>                                 provider <span class="op">=</span> <span class="st">"esri"</span>,</span>
+<span>                                 zoom <span class="op">=</span> <span class="fl">16</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># from Sentinel-2 cloudless mosaic tiles</span></span>
+<span><span class="va">greenspace2</span> <span class="op">&lt;-</span> <span class="fu">greenSD</span><span class="fu">::</span><span class="fu"><a href="../reference/get_tile_green.html">get_tile_green</a></span><span class="op">(</span>bbox <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">83.087174</span>,<span class="fl">42.333373</span>,<span class="op">-</span><span class="fl">83.042542</span>,<span class="fl">42.358748</span><span class="op">)</span>, </span>
+<span>                                      zoom <span class="op">=</span> <span class="fl">17</span>, </span>
+<span>                                      provider <span class="op">=</span> <span class="st">"eox"</span>,</span>
+<span>                                      year <span class="op">=</span> <span class="fl">2022</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="extract-values-from-greenspace-seasonality-data-cube-with-samples">Extract values from Greenspace Seasonality Data Cube with
@@ -134,16 +148,10 @@ samples<a class="anchor" aria-label="anchor" href="#extract-values-from-greenspa
 </h2>
 <p>You can extract seasonal greenspace values at multiple point
 locations within a city boundary.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">boundary</span> <span class="op">&lt;-</span> <span class="fu">greenSD</span><span class="fu">::</span><span class="fu"><a href="../reference/check_urban_boundary.html">check_urban_boundary</a></span><span class="op">(</span>uid <span class="op">=</span> <span class="fl">1825</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_sample.html" class="external-link">st_sample</a></span><span class="op">(</span><span class="va">boundary</span>, size <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
 <span><span class="va">gs_samples</span> <span class="op">&lt;-</span> <span class="fu">greenSD</span><span class="fu">::</span><span class="fu"><a href="../reference/sample_values.html">sample_values</a></span><span class="op">(</span><span class="va">samples</span>, year <span class="op">=</span> <span class="fl">2022</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="download-land-cover-data-from-esa-worldcover-10m-dataset">Download land cover data from ESA WorldCover 10m dataset<a class="anchor" aria-label="anchor" href="#download-land-cover-data-from-esa-worldcover-10m-dataset"></a>
-</h2>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">lc</span> <span class="op">&lt;-</span> <span class="fu">greenSD</span><span class="fu">::</span><span class="fu"><a href="../reference/get_esa_wc.html">get_esa_wc</a></span><span class="op">(</span>place <span class="op">=</span> <span class="st">'Detroit'</span>, datatype <span class="op">=</span> <span class="st">"landcover"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="visualize-seasonal-greenspace-dynamics-as-an-animated-gif">Visualize Seasonal Greenspace Dynamics as an Animated GIF<a class="anchor" aria-label="anchor" href="#visualize-seasonal-greenspace-dynamics-as-an-animated-gif"></a>
