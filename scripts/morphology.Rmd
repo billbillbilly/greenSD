@@ -7,6 +7,9 @@ output: html_document
 green <- greenSD::get_tile_green(bbox = c(-83.087174,42.333373,-83.042542,42.358748), 
                                  provider = "esri",
                                  zoom = 16)
+```
+
+```{r}
 p <- terra::ifel(green$green == 0, NA, 1)
 ```
 
