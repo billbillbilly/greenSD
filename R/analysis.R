@@ -427,7 +427,7 @@ compute_morphology <- function(r = NULL, directions = 4, grid_size = NULL, quiet
       grid <- terra::as.polygons(template)
       grid <- sf::st_as_sf(grid)
     } else if (inherits(grid_size, "sf")) {
-      grid <- sf::st_transform(grid, paste0("EPSG:", utm_crs))
+      grid <- sf::st_transform(grid, utm_crs)
     }
   }
 
