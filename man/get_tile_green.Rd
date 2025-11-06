@@ -44,6 +44,9 @@ With higher \code{gr_ratio_filter}, more pixels will be excluded.}
 where green is only microscopically bigger than blue. Default is 0.05.
 With higher \code{gb_ratio_filter}, more pixels will be excluded.}
 
+\item{clean}{logical. Whether to remove the blight and less green pixels
+based on \code{bright_filter}, \code{gr_ratio_filter}, and \code{gb_ratio_filter}.}
+
 \item{quiet}{logical. Whether show progress bars for some process.}
 }
 \value{

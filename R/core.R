@@ -684,6 +684,8 @@ sample_values <- function(samples = NULL, time = NULL,
 #' @param gb_ratio_filter numeric. (range from 0 to 1) To exclude pixels
 #' where green is only microscopically bigger than blue. Default is 0.05.
 #' With higher `gb_ratio_filter`, more pixels will be excluded.
+#' @param clean logical. Whether to remove the blight and less green pixels
+#' based on `bright_filter`, `gr_ratio_filter`, and `gb_ratio_filter`.
 #' @param quiet logical. Whether show progress bars for some process.
 #'
 #' @return
