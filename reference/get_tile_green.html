@@ -11,7 +11,7 @@ by EOX."><meta property="og:image" content="https://billbillbilly.github.io/gree
 
     <a class="navbar-brand me-2" href="../index.html">greenSD</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,6 +54,10 @@ by EOX.</p>
 <span>  zoom <span class="op">=</span> <span class="fl">17</span>,</span>
 <span>  provider <span class="op">=</span> <span class="st">"esri"</span>,</span>
 <span>  year <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  bright_filter <span class="op">=</span> <span class="fl">0.85</span>,</span>
+<span>  gr_ratio_filter <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>  gb_ratio_filter <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>  clean <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -84,6 +88,24 @@ e.g. ("1600 Pennsylvania Ave NW, Washington") or a vector of addresses
 <dt id="arg-year">year<a class="anchor" aria-label="anchor" href="#arg-year"></a></dt>
 <dd><p>integer. The desired year for Sentinel-2 cloudless mosaic
 tiles. (This is required when <code>provider = "eox"</code>)</p></dd>
+
+
+<dt id="arg-bright-filter">bright_filter<a class="anchor" aria-label="anchor" href="#arg-bright-filter"></a></dt>
+<dd><p>numeric. To remove very bright pixels (concrete,
+roofs, glare) Default is 0.85. With lower <code>bright_filter</code>, more bright
+pixels will be excluded.</p></dd>
+
+
+<dt id="arg-gr-ratio-filter">gr_ratio_filter<a class="anchor" aria-label="anchor" href="#arg-gr-ratio-filter"></a></dt>
+<dd><p>numeric. (range from 0 to 1) To exclude pixels
+where green is only microscopically bigger than red. Default is 0.05.
+With higher <code>gr_ratio_filter</code>, more pixels will be excluded.</p></dd>
+
+
+<dt id="arg-gb-ratio-filter">gb_ratio_filter<a class="anchor" aria-label="anchor" href="#arg-gb-ratio-filter"></a></dt>
+<dd><p>numeric. (range from 0 to 1) To exclude pixels
+where green is only microscopically bigger than blue. Default is 0.05.
+With higher <code>gb_ratio_filter</code>, more pixels will be excluded.</p></dd>
 
 
 <dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>
