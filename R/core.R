@@ -675,6 +675,15 @@ sample_values <- function(samples = NULL, time = NULL,
 #' @param provider character. One of "esri" and "eox".
 #' @param year integer. The desired year for Sentinel-2 cloudless mosaic
 #' tiles. (This is required when `provider = "eox"`)
+#' @param bright_filter numeric. To remove very bright pixels (concrete,
+#' roofs, glare) Default is 0.85. With lower `bright_filter`, more bright
+#' pixels will be excluded.
+#' @param gr_ratio_filter numeric. (range from 0 to 1) To exclude pixels
+#' where green is only microscopically bigger than red. Default is 0.05.
+#' With higher `gr_ratio_filter`, more pixels will be excluded.
+#' @param gb_ratio_filter numeric. (range from 0 to 1) To exclude pixels
+#' where green is only microscopically bigger than blue. Default is 0.05.
+#' With higher `gb_ratio_filter`, more pixels will be excluded.
 #' @param quiet logical. Whether show progress bars for some process.
 #'
 #' @return
@@ -699,6 +708,10 @@ get_tile_green <- function(bbox = NULL,
                            zoom = 17,
                            provider = 'esri',
                            year = NULL,
+                           bright_filter = 0.85,
+                           gr_ratio_filter = 0.05,
+                           gb_ratio_filter = 0.05,
+                           clean = TRUE,
                            quiet = TRUE) {
   if (quiet) {
     terra::terraOptions(progress=0)
@@ -781,10 +794,29 @@ get_tile_green <- function(bbox = NULL,
     threshold <- 0.05
   }
 
+  # G must be dominant
   greenImg2 <- ExG > threshold
   greenImgShadow2 = ExG > 0.05
   greenImg <- greenImg1*greenImg2 + greenImgShadow2*greenImgShadow1
+
+  g_dom <- (t[[2]] > t[[1]]) & (t[[2]] > t[[3]])
+  # green advantage ratio over red / blue
+  eps <- 1e-6
+  gr_ratio <- (t[[2]] - t[[1]]) / (t[[2]] + t[[1]] + eps)
+  gb_ratio <- (t[[2]] - t[[3]]) / (t[[2]] + t[[3]] + eps)
+  # knock out very bright pixels (concrete, roofs, glare)
+  not_bright <- !((t[[1]] > bright_filter) & (t[[2]] > bright_filter) & (t[[3]] > bright_filter))
+
+  if (clean) {
+    greenImg <- (greenImg != 0) &
+      g_dom &
+      (gr_ratio > gr_ratio_filter) &
+      (gb_ratio > gb_ratio_filter) &
+      not_bright
+
+  }
   greenImg <- terra::ifel(greenImg != 0, 1, 0)
+
   names(greenImg) <- "green"
   map_mask <- terra::ifel(greenImg == 0, NA, m)
   output <- list(green = greenImg,

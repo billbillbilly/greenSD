@@ -10,6 +10,10 @@ get_tile_green(
   zoom = 17,
   provider = "esri",
   year = NULL,
+  bright_filter = 0.85,
+  gr_ratio_filter = 0.05,
+  gb_ratio_filter = 0.05,
+  clean = TRUE,
   quiet = TRUE
 )
 }
@@ -27,6 +31,18 @@ e.g. ("1600 Pennsylvania Ave NW, Washington") or a vector of addresses
 
 \item{year}{integer. The desired year for Sentinel-2 cloudless mosaic
 tiles. (This is required when \code{provider = "eox"})}
+
+\item{bright_filter}{numeric. To remove very bright pixels (concrete,
+roofs, glare) Default is 0.85. With lower \code{bright_filter}, more bright
+pixels will be excluded.}
+
+\item{gr_ratio_filter}{numeric. (range from 0 to 1) To exclude pixels
+where green is only microscopically bigger than red. Default is 0.05.
+With higher \code{gr_ratio_filter}, more pixels will be excluded.}
+
+\item{gb_ratio_filter}{numeric. (range from 0 to 1) To exclude pixels
+where green is only microscopically bigger than blue. Default is 0.05.
+With higher \code{gb_ratio_filter}, more pixels will be excluded.}
 
 \item{quiet}{logical. Whether show progress bars for some process.}
 }
