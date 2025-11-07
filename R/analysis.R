@@ -411,7 +411,7 @@ compute_morphology <- function(r = NULL, directions = 4, grid_size = NULL, quiet
   start_time <- Sys.time()
 
   bbox <- sf::st_as_sfc(sf::st_bbox(as.vector(terra::ext(r[[1]]))))
-  sf::st_crs(bbox) <- 4326
+  sf::st_crs(bbox) <- as.numeric(terra::crs(r[[1]], describe = TRUE)[3])
   bbox <- sf::st_transform(bbox, crs = 4326)
 
   utm_crs <- get_utm_crs(bbox)
@@ -436,9 +436,8 @@ compute_morphology <- function(r = NULL, directions = 4, grid_size = NULL, quiet
     patches <- landscapemetrics::get_patches(r_proj, directions = directions)[[1]][[1]]
     names(patches) <- "patch_id"
 
-    cli::cli_alert_info('Computing metrics at patch level ...')
+    if (!quiet) cli::cli_alert_info('Computing metrics at patch level ...')
     metrics_df <- compute_landscape_metrics_parallel(r_proj, directions)
-    cli::cli_alert_info('Finished computing metrics.')
 
     layers <- list()
     layers[['patch_id']] <- patches
@@ -466,7 +465,7 @@ compute_morphology <- function(r = NULL, directions = 4, grid_size = NULL, quiet
     report_time(start_time)
     return(sf::st_as_sf(patch_polygons))
   } else {
-    cli::cli_alert_info('Computing metrics at landscape level ...')
+    if (!quiet) cli::cli_alert_info('Computing metrics at landscape level ...')
     results <- compute_landscape_l_metrics(r_proj, grid)
     report_time(start_time)
     return(results)
