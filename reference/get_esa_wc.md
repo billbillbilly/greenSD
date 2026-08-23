@@ -1,0 +1,126 @@
+# Download Land Cover or NDVI Data from ESA WorldCover or Sentinel-2 10m Land Use/Land Cover Time Series
+
+Download 11-class land cover or 3-band NDVI data from the ESA WorldCover
+10m Annual Dataset (NDVI p90, NDVI p50, NDVI p10), or 9-class annual
+land use/land cover (LULC) maps from the Sentinel-2 10m Land Use/Land
+Cover Time Series produced by Impact Observatory, accessed via Microsoft
+Planetary Computer. Users can define an area of interest using a
+bounding box or place name.
+
+## Usage
+
+``` r
+get_esa_wc(
+  bbox = NULL,
+  place = NULL,
+  datatype = "landcover",
+  year = 2021,
+  mask = TRUE,
+  quiet = TRUE
+)
+```
+
+## Arguments
+
+- bbox:
+
+  `sf`, `sfc`, or a numeric vector (xmin, ymin, xmax, ymax) defining the
+  area of interest. Optional if `place` is provided.
+
+- place:
+
+  character or vector. (optional) A single line address, e.g. ("1600
+  Pennsylvania Ave NW, Washington") or a vector of addresses
+  (c("Madrid", "Barcelona")).
+
+- datatype:
+
+  character. One of `"landcover"`, `"ndvi"`, or `"lulc"`. `"landcover"`
+  and `"ndvi"` retrieve ESA WorldCover data (years 2020–2021). `"lulc"`
+  retrieves the Sentinel-2 10m LULC Time Series (years 2017–2024).
+
+- year:
+
+  numeric. The year of interest. For `"landcover"` and `"ndvi"`: `2020`
+  or `2021` (default `2021`). For `"lulc"`: an integer from `2017` to
+  `2024`.
+
+- mask:
+
+  logical (optional). Default is `TRUE`. If `TRUE`, masks the raster
+  data using the given `bbox` or `place`.
+
+- quiet:
+
+  logical. Whether show progress bars for some process.
+
+## Value
+
+A `SpatRaster` object. For `"landcover"`: 11-class ESA WorldCover land
+cover map. For `"ndvi"`: NDVI yearly percentile composite (NDVI p90,
+NDVI p50, NDVI p10). For `"lulc"`: 9-class Sentinel-2 annual land
+use/land cover classification (layer named `"LULC"`).
+
+## Details
+
+The `"lulc"` datatype retrieves the Impact Observatory Sentinel-2 10m
+Land Use/Land Cover Time Series from the public AWS open data bucket
+(`s3://io-10m-annual-lulc`, no authentication required). New annual maps
+are released each January, so coverage currently extends to 2024. The 9
+classes are: 1 = Water, 2 = Trees, 4 = Flooded vegetation, 5 = Crops, 7
+= Built area, 8 = Bare ground, 9 = Snow/ice, 10 = Clouds, 11 =
+Rangeland.
+
+## References
+
+Zanaga, D., Van De Kerchove, R., De Keersmaecker, W., Souverijns, N.,
+Brockmann, C., Quast, R., Wevers, J., Grosu, A., Paccini, A., Vergnaud,
+S., Cartus, O., Santoro, M., Fritz, S., Georgieva, I., Lesiv, M.,
+Carter, S., Herold, M., Li, L., Tsendbazar, N.-E., … Arino, O. (2021).
+ESA WorldCover 10 m 2020 v100 (Version v100). Zenodo.
+https://doi.org/10.5281/zenodo.5571936
+
+Zanaga, D., Van De Kerchove, R., Daems, D., De Keersmaecker, W.,
+Brockmann, C., Kirches, G., Wevers, J., Cartus, O., Santoro, M., Fritz,
+S., Lesiv, M., Herold, M., Tsendbazar, N.-E., Xu, P., Ramoino, F., &
+Arino, O. (2022). ESA WorldCover 10 m 2021 v200 (Version v200). Zenodo.
+https://doi.org/10.5281/zenodo.7254221
+
+Karra, K., Kontgis, C., Statman-Weil, Z., Mazzariello, J. C., Mathis,
+M., & Brumby, S. P. (2021). Global land use / land cover with Sentinel-2
+and deep learning. IGARSS 2021.
+https://doi.org/10.1109/IGARSS47720.2021.9553499
+
+## Examples
+
+``` r
+# \donttest{
+# ESA WorldCover land cover
+result <- get_esa_wc(
+  place = 'New York',
+  datatype = 'landcover',
+  year = 2021
+)
+#> ℹ Start downloading land cover data ...
+#> ✔ Finished downloading data
+#> ℹ Masking and cropping data ...
+#> |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          
+#> ✔ Data successfully processed.
+#> ✔ Completed. Time taken: 34 seconds.
+
+# Sentinel-2 10m LULC Time Series
+result <- get_esa_wc(
+  place = 'New York',
+  datatype = 'lulc',
+  year = 2022
+)
+#> ℹ Searching for Sentinel-2 LULC tiles ...
+#> ℹ Downloading 1 Sentinel-2 LULC tile(s) ...
+#> ✔ Finished downloading data
+#> |---------|---------|---------|---------|=========================================                                          
+#> ℹ Masking and cropping data ...
+#> |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          
+#> ✔ Data successfully processed.
+#> ✔ Completed. Time taken: 22 minutes.
+# }
+```

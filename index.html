@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="favicon.ico">
 <link rel="manifest" href="site.webmanifest">
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Access and Analyze Global GreenSpace Spatial Data">
 <meta name="description" content="Access and analyze multi-band greenspace seasonality data cubes (available for 1,028 major global cities), global Normalized Difference Vegetation Index / land cover data from the European Space Agency WorldCover 10m Dataset, and Sentinel-2-l2a images. Users can download data using bounding boxes, city names, and filter by year or seasonal time window. The package also supports calculating human exposure to greenspace using a population-weighted greenspace exposure model introduced by Chen et al. (2022) &lt;doi:10.1038/s41467-022-32258-4&gt; based on Global Human Settlement Layer population data, and calculating a set of greenspace morphology metrics at patch and landscape levels.">
@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="index.html">greenSD</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,20 +96,21 @@
 <div class="section level4">
 <h4 id="id_1-get-data-from-greenspace-seasonality-data-cube">1 Get data from Greenspace Seasonality Data Cube<a class="anchor" aria-label="anchor" href="#id_1-get-data-from-greenspace-seasonality-data-cube"></a>
 </h4>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># by bounding box</span></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>gs <span class="ot">&lt;-</span> greenSD<span class="sc">::</span><span class="fu">get_gsdc</span>(<span class="at">bbox =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">83.087174</span>,<span class="fl">42.333373</span>,<span class="sc">-</span><span class="fl">83.042542</span>,<span class="fl">42.358748</span>), <span class="at">year =</span> <span class="dv">2022</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co"># by place name</span></span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>gs <span class="ot">&lt;-</span> greenSD<span class="sc">::</span><span class="fu">get_gsdc</span>(<span class="at">place =</span> <span class="st">'Detroit'</span>, <span class="at">year =</span> <span class="dv">2022</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co"># by coordinates (point)</span></span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>gs <span class="ot">&lt;-</span> greenSD<span class="sc">::</span><span class="fu">get_gsdc</span>(<span class="at">location =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">83.10215</span> <span class="fl">42.38342</span>), <span class="at">year =</span> <span class="dv">2022</span>)</span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co"># by UID and time range</span></span>
-<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="do">## greenSD::check_available_cities()</span></span>
-<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>gs <span class="ot">&lt;-</span> greenSD<span class="sc">::</span><span class="fu">get_gsdc</span>(<span class="at">UID =</span> <span class="dv">1825</span>, <span class="at">year =</span> <span class="dv">2022</span>, <span class="at">time =</span> <span class="fu">c</span>(<span class="st">"03-01"</span>, <span class="st">"09-01"</span>))</span>
-<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a></span>
-<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co"># Extract values with sampled locations</span></span>
-<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>boundary <span class="ot">&lt;-</span> greenSD<span class="sc">::</span><span class="fu">check_urban_boundary</span>(<span class="at">uid =</span> <span class="dv">1825</span>, <span class="at">plot =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>samples <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_sample</span>(boundary, <span class="at">size =</span> <span class="dv">50</span>)</span>
-<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>gs_samples <span class="ot">&lt;-</span> greenSD<span class="sc">::</span><span class="fu">sample_values</span>(samples, <span class="at">year =</span> <span class="dv">2022</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># by bounding box</span></span>
+<span><span class="va">gs</span> <span class="op">&lt;-</span> <span class="fu">greenSD</span><span class="fu">::</span><span class="fu"><a href="reference/get_gsdc.html">get_gsdc</a></span><span class="op">(</span>bbox <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">83.087174</span>,<span class="fl">42.333373</span>,<span class="op">-</span><span class="fl">83.042542</span>,<span class="fl">42.358748</span><span class="op">)</span>, year <span class="op">=</span> <span class="fl">2022</span><span class="op">)</span></span>
+<span><span class="co"># by place name</span></span>
+<span><span class="va">gs</span> <span class="op">&lt;-</span> <span class="fu">greenSD</span><span class="fu">::</span><span class="fu"><a href="reference/get_gsdc.html">get_gsdc</a></span><span class="op">(</span>place <span class="op">=</span> <span class="st">'Detroit'</span>, year <span class="op">=</span> <span class="fl">2022</span><span class="op">)</span></span>
+<span><span class="co"># by coordinates (point)</span></span>
+<span><span class="va">gs</span> <span class="op">&lt;-</span> <span class="fu">greenSD</span><span class="fu">::</span><span class="fu"><a href="reference/get_gsdc.html">get_gsdc</a></span><span class="op">(</span>location <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">83.10215</span>, <span class="fl">42.38342</span><span class="op">)</span>, year <span class="op">=</span> <span class="fl">2022</span><span class="op">)</span></span>
+<span><span class="co"># by UID and time range</span></span>
+<span><span class="co">## greenSD::check_available_urban()</span></span>
+<span><span class="va">gs</span> <span class="op">&lt;-</span> <span class="fu">greenSD</span><span class="fu">::</span><span class="fu"><a href="reference/get_gsdc.html">get_gsdc</a></span><span class="op">(</span>UID <span class="op">=</span> <span class="fl">1825</span>, year <span class="op">=</span> <span class="fl">2022</span>, time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"03-01"</span>, <span class="st">"09-01"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Extract values with sampled locations</span></span>
+<span><span class="va">boundary</span> <span class="op">&lt;-</span> <span class="fu">greenSD</span><span class="fu">::</span><span class="fu"><a href="reference/check_urban_boundary.html">check_urban_boundary</a></span><span class="op">(</span>uid <span class="op">=</span> <span class="fl">1825</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_sample.html" class="external-link">st_sample</a></span><span class="op">(</span><span class="va">boundary</span>, size <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
+<span><span class="va">gs_samples</span> <span class="op">&lt;-</span> <span class="fu">greenSD</span><span class="fu">::</span><span class="fu"><a href="reference/sample_values.html">sample_values</a></span><span class="op">(</span><span class="va">samples</span>, time <span class="op">=</span> <span class="fl">2022</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="id_2-get-data-from-esa-worldcover-10m-annual-dataset">2 Get data from ESA WorldCover 10m Annual Dataset<a class="anchor" aria-label="anchor" href="#id_2-get-data-from-esa-worldcover-10m-annual-dataset"></a>
@@ -119,11 +120,11 @@
 <span><span class="va">ndvi</span> <span class="op">&lt;-</span> <span class="fu">greenSD</span><span class="fu">::</span><span class="fu"><a href="reference/get_esa_wc.html">get_esa_wc</a></span><span class="op">(</span><span class="va">bbox</span>, datatype <span class="op">=</span> <span class="st">'ndvi'</span>, year <span class="op">=</span> <span class="fl">2021</span><span class="op">)</span></span>
 <span><span class="va">lc</span> <span class="op">&lt;-</span> <span class="fu">greenSD</span><span class="fu">::</span><span class="fu"><a href="reference/get_esa_wc.html">get_esa_wc</a></span><span class="op">(</span><span class="va">bbox</span>, datatype <span class="op">=</span> <span class="st">'landcover'</span>, year <span class="op">=</span> <span class="fl">2021</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
-<thead><tr class="header">
+<thead><tr>
 <th>ESA WorldCover NDVI</th>
 <th>ESA WorldCover Land Cover</th>
 </tr></thead>
-<tbody><tr class="odd">
+<tbody><tr>
 <td><img src="reference/figures/NDVI_p50.png"></td>
 <td><img src="reference/figures/lc.png"></td>
 </tr></tbody>
@@ -157,35 +158,34 @@
 <span>                                      provider <span class="op">=</span> <span class="st">"eox"</span>,</span>
 <span>                                      year <span class="op">=</span> <span class="fl">2024</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
-<thead><tr class="header">
+<thead><tr>
 <th>WorldImagery map</th>
 <th>Greenspace</th>
 </tr></thead>
-<tbody><tr class="odd">
+<tbody><tr>
 <td><img src="reference/figures/esri_tiles.png"></td>
 <td><img src="reference/figures/esri_green.png"></td>
 </tr></tbody>
 </table>
 <table class="table">
-<thead><tr class="header">
+<thead><tr>
 <th>Sentinel-2 cloudless mosaic map</th>
 <th>Greenspace</th>
 </tr></thead>
-<tbody><tr class="odd">
+<tbody><tr>
 <td><img src="reference/figures/eox_tiles.png"></td>
 <td><img src="reference/figures/eox_green.png"></td>
 </tr></tbody>
 </table>
 </div>
 <div class="section level4">
-<h4 id="id_5-classify-land-cover-based-on-multi-source-imagery-datasets">5 Classify land cover based on multi-source imagery datasets<a class="anchor" aria-label="anchor" href="#id_5-classify-land-cover-based-on-multi-source-imagery-datasets"></a>
+<h4 id="id_5-classify-ndvi-into-vegetation-classes">5 Classify NDVI into vegetation classes<a class="anchor" aria-label="anchor" href="#id_5-classify-ndvi-into-vegetation-classes"></a>
 </h4>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sem</span> <span class="op">&lt;-</span> <span class="fu">greenSD</span><span class="fu">::</span><span class="fu">lc_sem_seg</span><span class="op">(</span>bbox <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">83.087174</span>,<span class="fl">42.333373</span>,<span class="op">-</span><span class="fl">83.042542</span>,<span class="fl">42.358748</span><span class="op">)</span>,</span>
-<span>                           tiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'esri'</span>, <span class="st">'eox'</span><span class="op">)</span>,</span>
-<span>                           label_year <span class="op">=</span> <span class="fl">2021</span>,</span>
-<span>                           tile_year <span class="op">=</span> <span class="fl">2024</span>,</span>
-<span>                           sample_size <span class="op">=</span> <span class="fl">20000</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ndvi</span> <span class="op">&lt;-</span> <span class="fu">greenSD</span><span class="fu">::</span><span class="fu"><a href="reference/get_esa_wc.html">get_esa_wc</a></span><span class="op">(</span>bbox <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">83.087174</span>,<span class="fl">42.333373</span>,<span class="op">-</span><span class="fl">83.042542</span>,<span class="fl">42.358748</span><span class="op">)</span>,</span>
+<span>                            datatype <span class="op">=</span> <span class="st">'ndvi'</span>,</span>
+<span>                            year <span class="op">=</span> <span class="fl">2021</span><span class="op">)</span></span>
+<span><span class="va">sem</span> <span class="op">&lt;-</span> <span class="fu">greenSD</span><span class="fu">::</span><span class="fu"><a href="reference/ndvi_to_sem.html">ndvi_to_sem</a></span><span class="op">(</span><span class="va">ndvi</span><span class="op">$</span><span class="va">NDVI_p50</span>, threshold <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="id_6-compute-population-weighted-greenspace-fraction-and-exposure-to-greenspace">6 Compute population-weighted greenspace fraction and exposure to greenspace<a class="anchor" aria-label="anchor" href="#id_6-compute-population-weighted-greenspace-fraction-and-exposure-to-greenspace"></a>
@@ -213,18 +213,18 @@
 <col width="37%">
 <col width="36%">
 </colgroup>
-<thead><tr class="header">
+<thead><tr>
 <th><span style="font-size:10px;">1. GHSL population</span></th>
 <th><span style="font-size:10px;">2. Extract population by points</span></th>
 <th><span style="font-size:10px;">3. buffers based on points</span></th>
 </tr></thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td></td>
 <td></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr>
 <td></td>
 <td></td>
 <td></td>
@@ -237,18 +237,18 @@
 <col width="29%">
 <col width="35%">
 </colgroup>
-<thead><tr class="header">
+<thead><tr>
 <th><span style="font-size:10px;">4. Population-Weighted Greenspace Fraction</span></th>
 <th><span style="font-size:10px;">5. Summarize values with grid</span></th>
 <th><span style="font-size:10px;">6. Population-Weighted Greenspace Exposure</span></th>
 </tr></thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td></td>
 <td></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr>
 <td></td>
 <td></td>
 <td></td>
@@ -292,12 +292,12 @@
 <col width="36%">
 <col width="36%">
 </colgroup>
-<thead><tr class="header">
+<thead><tr>
 <th>Seasonal Greenspace Dynamics</th>
 <th>Population-Weighted Greenspace Fraction</th>
 <th>Population-Weighted Greenspace Exposure</th>
 </tr></thead>
-<tbody><tr class="odd">
+<tbody><tr>
 <td><img src="reference/figures/greenspace_animation.gif"></td>
 <td><img src="reference/figures/greenspace_fraction_animation.gif"></td>
 <td><img src="reference/figures/greenspace_exposure_animation.gif"></td>
@@ -373,7 +373,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>
