@@ -8,6 +8,7 @@ ESA WorldCover 10m Annual Composites Dataset, or Sentinel-2-l2a images.}
 sample_values(
   samples = NULL,
   time = NULL,
+  year = NULL,
   source = "gsdc",
   output_bands = NULL,
   cloud_cover = 10,
@@ -23,6 +24,8 @@ Can be a list of length-2 numeric vectors (\code{list(c(lon, lat))}),
 a 2-column matrix or data.frame, or an \code{sf} object with POINT geometry in any CRS.}
 
 \item{time}{numeric or vector. The time of interest. See Detail.}
+
+\item{year}{numeric or vector. Deprecated alias for \code{time}.}
 
 \item{source}{character. The data source for extracting greenspace values:
 \code{gsdc} for Greenspace Seasonality Data Cube (also see \code{\link[=get_gsdc]{get_gsdc()}}]),
@@ -71,17 +74,17 @@ Use \code{\link[=check_available_urban]{check_available_urban()}} and \code{\lin
 cities and their boundaries.
 }
 \examples{
+\dontrun{
 # see supported urban areas and their boundaries
 check_available_urban()
-boundary <- check_urban_boundary(uid = 11)
+boundary <- check_urban_boundary(uid = 11, plot = FALSE)
 
-# sample locations with in the boundary
+# sample locations within the boundary
 samples <- sf::st_sample(boundary, size = 20)
 
 # extract values
-gs_samples <- sample_values(samples,
-                            # time = 2022
-                           )
+gs_samples <- sample_values(samples, time = 2022)
+}
 
 }
 \references{

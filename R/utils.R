@@ -57,7 +57,9 @@ check_urban_boundary <- function(uid = NULL, plot = TRUE, test = FALSE) {
     sf::read_sf('https://raw.githubusercontent.com/billbillbilly/greenSD/main/scripts/city_urban_boundaries.geojson')
   )
   b <- boundary[boundary$UID == uid, ]
-  plot(b$geometry)
+  if (isTRUE(plot)) {
+    plot(b$geometry)
+  }
   return(b)
 }
 
@@ -455,6 +457,7 @@ write_eox_wms_xml <- function(bbox, year = 2024, zoom = 15) {
   xmin <- bbox[1]; ymin <- bbox[2]; xmax <- bbox[3]; ymax <- bbox[4]
   res_deg <- 360 / (256 * 2^zoom)
   sizex <- ceiling((xmax - xmin) / res_deg)
+  sizey <- ceiling((ymax - ymin) / res_deg)
 
   xml_lines <- c(
     '<GDAL_WMS>',
@@ -471,7 +474,7 @@ write_eox_wms_xml <- function(bbox, year = 2024, zoom = 15) {
     paste0('    <LowerRightX>', bbox[3], '</LowerRightX>'),
     paste0('    <LowerRightY>', bbox[2], '</LowerRightY>'),
     paste0('    <SizeX>', sizex, '</SizeX>'),
-    paste0('    <SizeY>', sizex, '</SizeY>'),
+    paste0('    <SizeY>', sizey, '</SizeY>'),
     '  </DataWindow>',
     '  <Projection>EPSG:4326</Projection>',
     '  <BandsCount>3</BandsCount>',
@@ -504,7 +507,8 @@ compute_landscape_metrics_parallel <- function(r,
   on.exit(unlink(raster_path), add = TRUE)
   terra::writeRaster(r, raster_path, overwrite = TRUE)
   old_plan <- future::plan()
-  future::plan(future::multisession, workers = future::availableCores() - 1)
+  workers <- max(1, future::availableCores() - 1)
+  future::plan(future::multisession, workers = workers)
   on.exit(future::plan(old_plan), add = TRUE)
 
   compute_one_metric <- function(metric_name, raster_path, directions) {

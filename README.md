@@ -56,15 +56,15 @@ gs <- greenSD::get_gsdc(bbox = c(-83.087174,42.333373,-83.042542,42.358748), yea
 # by place name
 gs <- greenSD::get_gsdc(place = 'Detroit', year = 2022)
 # by coordinates (point)
-gs <- greenSD::get_gsdc(location = c(-83.10215 42.38342), year = 2022)
+gs <- greenSD::get_gsdc(location = c(-83.10215, 42.38342), year = 2022)
 # by UID and time range
-## greenSD::check_available_cities()
+## greenSD::check_available_urban()
 gs <- greenSD::get_gsdc(UID = 1825, year = 2022, time = c("03-01", "09-01"))
 
 # Extract values with sampled locations
 boundary <- greenSD::check_urban_boundary(uid = 1825, plot = FALSE)
 samples <- sf::st_sample(boundary, size = 50)
-gs_samples <- greenSD::sample_values(samples, year = 2022)
+gs_samples <- greenSD::sample_values(samples, time = 2022)
 ```
 
 #### 2 Get data from ESA WorldCover 10m Annual Dataset
@@ -110,13 +110,12 @@ greenspace <- greenSD::get_tile_green(bbox = c(-83.087174,42.333373,-83.042542,4
 |---------------------|---------------------------|
 | ![](man/figures/eox_tiles.png) | ![](man/figures/eox_green.png) |
 
-#### 5 Classify land cover based on multi-source imagery datasets
+#### 5 Classify NDVI into vegetation classes
 ```r
-sem <- greenSD::lc_sem_seg(bbox = c(-83.087174,42.333373,-83.042542,42.358748),
-                           tiles = c('esri', 'eox'),
-                           label_year = 2021,
-                           tile_year = 2024,
-                           sample_size = 20000)
+ndvi <- greenSD::get_esa_wc(bbox = c(-83.087174,42.333373,-83.042542,42.358748),
+                            datatype = 'ndvi',
+                            year = 2021)
+sem <- greenSD::ndvi_to_sem(ndvi$NDVI_p50, threshold = c(0.2, 0.5))
 ```
 
 #### 6 Compute population-weighted greenspace fraction and exposure to greenspace

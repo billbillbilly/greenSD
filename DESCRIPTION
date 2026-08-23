@@ -1,7 +1,7 @@
 Package: greenSD
 Type: Package
 Title: Access and Analyze Global GreenSpace Spatial Data
-Version: 0.1.2
+Version: 0.2.2
 Authors@R: c(
     person(
       given = "Xiaohao",
@@ -26,7 +26,7 @@ Encoding: UTF-8
 LazyData: true
 Depends: 
     R (>= 4.1)
-Suggests: 
+Suggests:
     testthat (>= 3.0.0),
     knitr,
     rmarkdown
@@ -53,4 +53,4 @@ Imports:
   grDevices,
   rlang
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3

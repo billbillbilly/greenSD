@@ -73,6 +73,10 @@ get_gsdc <- function(bbox = NULL, place = NULL, location = NULL, UID = NULL,
   # find the city with a corresponding uid
   if(!inherits(UID, 'NULL')) {
     urls <- get_data_with_uid(UID, year)
+    if (length(urls) == 0) {
+      base::warning("No greenspace data found for the specified UID/year.")
+      return(NULL)
+    }
     greenspace <- download_data(urls)
     if (!is.null(time)) {
       if (length(time) != 1) {
@@ -97,6 +101,15 @@ get_gsdc <- function(bbox = NULL, place = NULL, location = NULL, UID = NULL,
     }
     # find the UID of overlapped city
     uid <- check_overlap(location)
+    if (is.na(uid)) {
+      base::warning("No urban areas intersect with the area/point of interest.")
+      return(NULL)
+    }
+    urls <- get_data_with_uid(id = as.numeric(uid), y = year)
+    if (length(urls) == 0) {
+      base::warning("No greenspace data found for the matched urban area/year.")
+      return(NULL)
+    }
     greenspace <- download_data(urls)
     if (!is.null(time)) {
       if (length(time) != 1) {
@@ -132,7 +145,15 @@ get_gsdc <- function(bbox = NULL, place = NULL, location = NULL, UID = NULL,
     bbox <- sf::st_transform(bbox, 4326)
     location <- sf::st_centroid(bbox)
     uid <- check_overlap(location)
+    if (is.na(uid)) {
+      base::warning("No urban areas intersect with the area/point of interest.")
+      return(NULL)
+    }
     urls <- get_data_with_uid(id = as.numeric(uid), y = year)
+    if (length(urls) == 0) {
+      base::warning("No greenspace data found for the matched urban area/year.")
+      return(NULL)
+    }
     greenspace <- download_data(urls)
 
     if (!is.null(time)) {
@@ -164,12 +185,15 @@ get_gsdc <- function(bbox = NULL, place = NULL, location = NULL, UID = NULL,
   }
 }
 
-#' @title Download landcover or NDVI Data from ESA WorldCover
-#' 10m Annual Dataset
+#' @title Download Land Cover or NDVI Data from ESA WorldCover or
+#' Sentinel-2 10m Land Use/Land Cover Time Series
 #' @name get_esa_wc
 #'
-#' @description download 11-class landcover or 3-band NDVI Data
-#' (NDVI p90, NDVI p50, NDVI p10). Users can define an area of interest
+#' @description Download 11-class land cover or 3-band NDVI data from the
+#' ESA WorldCover 10m Annual Dataset (NDVI p90, NDVI p50, NDVI p10), or
+#' 9-class annual land use/land cover (LULC) maps from the Sentinel-2 10m
+#' Land Use/Land Cover Time Series produced by Impact Observatory, accessed
+#' via Microsoft Planetary Computer. Users can define an area of interest
 #' using a bounding box or place name.
 #'
 #' @param bbox `sf`, `sfc`, or a numeric vector (xmin, ymin, xmax, ymax)
@@ -177,20 +201,47 @@ get_gsdc <- function(bbox = NULL, place = NULL, location = NULL, UID = NULL,
 #' @param place character or vector. (optional) A single line address,
 #' e.g. ("1600 Pennsylvania Ave NW, Washington") or a vector of addresses
 #' (c("Madrid", "Barcelona")).
-#' @param datatype character. One of "landcover" and "ndvi".
-#' @param year numeric. The year of interest: `2020` or `2021`. The default is `2021`.
+#' @param datatype character. One of `"landcover"`, `"ndvi"`, or `"lulc"`.
+#' `"landcover"` and `"ndvi"` retrieve ESA WorldCover data (years 2020–2021).
+#' `"lulc"` retrieves the Sentinel-2 10m LULC Time Series (years 2017–2024).
+#' @param year numeric. The year of interest. For `"landcover"` and `"ndvi"`:
+#' `2020` or `2021` (default `2021`). For `"lulc"`: an integer from `2017`
+#' to `2024`.
 #' @param mask logical (optional). Default is `TRUE`. If `TRUE`, masks the
 #' raster data using the given `bbox` or `place`.
 #' @param quiet logical. Whether show progress bars for some process.
 #'
-#' @return A `SpatRaster` object containing 11-class land cover or NDVI
-#' yearly percentiles composite (NDVI p90, NDVI p50, NDVI p10)
+#' @return A `SpatRaster` object. For `"landcover"`: 11-class ESA WorldCover
+#' land cover map. For `"ndvi"`: NDVI yearly percentile composite
+#' (NDVI p90, NDVI p50, NDVI p10). For `"lulc"`: 9-class Sentinel-2
+#' annual land use/land cover classification (layer named `"LULC"`).
+#'
+#' @details
+#' The `"lulc"` datatype retrieves the Impact Observatory Sentinel-2 10m
+#' Land Use/Land Cover Time Series from the public AWS open data bucket
+#' (`s3://io-10m-annual-lulc`, no authentication required). New annual maps
+#' are released each January, so coverage currently extends to 2024. The 9
+#' classes are:
+#' 1 = Water, 2 = Trees, 4 = Flooded vegetation, 5 = Crops,
+#' 7 = Built area, 8 = Bare ground, 9 = Snow/ice, 10 = Clouds,
+#' 11 = Rangeland.
 #'
 #' @examples
+#' \donttest{
+#' # ESA WorldCover land cover
 #' result <- get_esa_wc(
-#'   # place = 'New York'
+#'   place = 'New York',
+#'   datatype = 'landcover',
 #'   year = 2021
 #' )
+#'
+#' # Sentinel-2 10m LULC Time Series
+#' result <- get_esa_wc(
+#'   place = 'New York',
+#'   datatype = 'lulc',
+#'   year = 2022
+#' )
+#' }
 #'
 #' @references
 #' Zanaga, D., Van De Kerchove, R., De Keersmaecker, W., Souverijns, N.,
@@ -206,14 +257,28 @@ get_gsdc <- function(bbox = NULL, place = NULL, location = NULL, UID = NULL,
 #' ESA WorldCover 10 m 2021 v200 (Version v200).
 #' Zenodo. https://doi.org/10.5281/zenodo.7254221
 #'
+#' Karra, K., Kontgis, C., Statman-Weil, Z., Mazzariello, J. C., Mathis, M.,
+#' & Brumby, S. P. (2021). Global land use / land cover with Sentinel-2 and
+#' deep learning. IGARSS 2021.
+#' https://doi.org/10.1109/IGARSS47720.2021.9553499
+#'
 #' @importFrom aws.s3 get_bucket save_object
 #' @export
 get_esa_wc <- function(bbox = NULL, place = NULL,
                        datatype = "landcover",
                        year = 2021, mask = TRUE,
                        quiet = TRUE) {
-  if (!as.numeric(year) %in% c(2020, 2021)) {
-    stop("`year` has to be 2020 or 2021")
+  if (!datatype %in% c("landcover", "ndvi", "lulc")) {
+    stop("`datatype` must be one of 'landcover', 'ndvi', or 'lulc'.")
+  }
+  if (datatype %in% c("landcover", "ndvi")) {
+    if (!as.numeric(year) %in% c(2020, 2021)) {
+      stop("`year` has to be 2020 or 2021 for ESA WorldCover 'landcover' and 'ndvi' data.")
+    }
+  } else if (datatype == "lulc") {
+    if (!as.numeric(year) %in% 2017:2024) {
+      stop("`year` has to be between 2017 and 2024 for Sentinel-2 LULC Time Series data.")
+    }
   }
 
   start_time <- Sys.time()
@@ -242,6 +307,86 @@ get_esa_wc <- function(bbox = NULL, place = NULL,
   bbox <- sf::st_transform(bbox, 4326)
   bbox_coords <- sf::st_bbox(bbox)
 
+  # --- Sentinel-2 10m LULC Time Series (Impact Observatory public S3) ---
+  if (datatype == "lulc") {
+    cli::cli_alert_info("Searching for Sentinel-2 LULC tiles ...")
+
+    # Query Impact Observatory's own public STAC service (no auth required)
+    items <- rstac::stac("https://api.impactobservatory.com/stac-aws/") %>%
+      rstac::stac_search(
+        collections = "io-10m-annual-lulc",
+        bbox = c(bbox_coords["xmin"], bbox_coords["ymin"],
+                 bbox_coords["xmax"], bbox_coords["ymax"]),
+        datetime = paste0(year, "-01-01T00:00:00Z/", year, "-12-31T23:59:59Z"),
+        limit = 100
+      ) %>%
+      rstac::get_request()
+
+    features <- items$features
+    n_items <- length(features)
+
+    if (n_items == 0) {
+      cli::cli_alert_info("No Sentinel-2 LULC tiles found for the requested area/year.")
+      return(NULL)
+    }
+
+    cli::cli_alert_info(paste0("Downloading ", n_items, " Sentinel-2 LULC tile(s) ..."))
+
+    result_list <- list()
+    temp_paths <- c()
+    original_timeout <- getOption('timeout')
+    options(timeout = 9999)
+    on.exit({
+      options(timeout = original_timeout)
+      unlink(temp_paths, recursive = TRUE)
+    }, add = TRUE)
+
+    for (i in seq_len(n_items)) {
+      # resolve the href: "supercell" is the asset key for io-10m-annual-lulc;
+      # fall back to first available asset if key changes in future versions
+      assets <- features[[i]]$assets
+      href <- if (!is.null(assets$supercell$href)) {
+        assets$supercell$href
+      } else {
+        assets[[1]]$href
+      }
+      # convert s3:// URI to HTTPS if needed (href is usually already HTTPS)
+      href <- sub("^s3://io-10m-annual-lulc/",
+                  "https://io-10m-annual-lulc.s3.us-west-2.amazonaws.com/",
+                  href)
+      temp_tif <- tempfile(fileext = ".tif")
+      utils::download.file(href, temp_tif, mode = "wb", quiet = quiet)
+      result_list[[i]] <- terra::rast(temp_tif)
+      temp_paths <- c(temp_paths, temp_tif)
+    }
+
+    cli::cli_alert_success("Finished downloading data")
+
+    if (length(result_list) == 1) {
+      out_data <- result_list[[1]]
+    } else {
+      cli::cli_alert_info("Mosaicing multiple tiles ...")
+      rast_collection <- terra::sprc(result_list)
+      out_data <- terra::mosaic(rast_collection, fun = "first")
+    }
+
+    out_data <- terra::project(out_data, "EPSG:4326", method = "near")
+
+    if (mask) {
+      cli::cli_alert_info("Masking and cropping data ...")
+      bbox_vect <- if (!inherits(bbox, "SpatVector")) terra::vect(bbox) else bbox
+      out_data <- terra::mask(out_data, bbox_vect)
+      out_data <- terra::crop(out_data, bbox_vect)
+    }
+
+    names(out_data) <- "LULC"
+    cli::cli_alert_success("Data successfully processed.")
+    report_time(start_time)
+    return(out_data)
+  }
+
+  # --- ESA WorldCover (landcover / ndvi) ---
+
   # List ESA Tile Names by bbox
   tiles <- if (datatype == 'landcover') {
     esa_wc_tiles[sf::st_intersects(esa_wc_tiles, bbox, sparse = FALSE), ]$tile
@@ -251,10 +396,14 @@ get_esa_wc <- function(bbox = NULL, place = NULL,
       lon_min = bbox_coords["xmin"], lon_max = bbox_coords["xmax"]
     )
   }
+  if (length(tiles) == 0) {
+    cli::cli_alert_info("No ESA WorldCover tiles intersect the requested area.")
+    return(NULL)
+  }
 
   # get tiles
   keys <- c()
-  for (i in 1:length(tiles)) {
+  for (i in seq_along(tiles)) {
     t <- tiles[i]
     if (datatype == 'landcover') {
       f <- paste0(if (year == 2020) "v100/2020/" else "v200/2021/",
@@ -280,6 +429,10 @@ get_esa_wc <- function(bbox = NULL, place = NULL,
       keys <- c(keys, as.character(f$key))
     }
   }
+  if (length(keys) == 0) {
+    cli::cli_alert_info("No ESA WorldCover data found for the requested area/year/datatype.")
+    return(NULL)
+  }
 
   # download data
   result_list <- list()
@@ -295,7 +448,7 @@ get_esa_wc <- function(bbox = NULL, place = NULL,
            if (datatype == 'landcover') 'land cover ' else 'NDVI ',
            "data ...")
   )
-  for (i in 1:length(keys)) {
+  for (i in seq_along(keys)) {
     k <- keys[i]
     temp_tif <- tempfile(fileext = ".tif")
     if (datatype == 'landcover') {
@@ -379,10 +532,12 @@ get_esa_wc <- function(bbox = NULL, place = NULL,
 #' A `List` of NDVI rasters if `mask = FALSE` and `select = "all"`.
 #'
 #' @examples
+#' \donttest{
 #' result <- get_s2a_ndvi(
-#'   # place = 'New York',
+#'   place = 'New York',
 #'   datetime = c("2020-08-01", "2020-09-01")
 #' )
+#' }
 #' @export
 get_s2a_ndvi <- function(bbox = NULL, place = NULL, datetime = c(),
                          cloud_cover = 10, vege_perc = 0, select = "latest",
@@ -425,9 +580,13 @@ get_s2a_ndvi <- function(bbox = NULL, place = NULL, datetime = c(),
   cli::cli_alert_info('Start downloading data ...')
   features <- download_sentinel(bbox, datetime[1], datetime[2],
                                 cloud_cover = cloud_cover, vege_perc = vege_perc)
+  if (length(features) == 0) {
+    cli::cli_alert_info("No Sentinel-2 L2A scenes found for the requested filters.")
+    return(NULL)
+  }
 
   dates <- c()
-  for (i in 1:length(features)) {
+  for (i in seq_along(features)) {
     dates <- c(dates, strsplit(features[[i]]$properties$datetime, split = "T")[[1]][1])
   }
   dates <- unique(dates)
@@ -447,7 +606,7 @@ get_s2a_ndvi <- function(bbox = NULL, place = NULL, datetime = c(),
     select_date <- get_the_date(select, dates)
   }
   cli::cli_alert_info('Importing bands ...')
-  for (i in 1:length(features)) {
+  for (i in seq_along(features)) {
     this_date <- strsplit(features[[i]]$properties$datetime, split = "T")[[1]][1]
     if (!is.null(select_date) && isTRUE(this_date != select_date)) {
       next
@@ -486,7 +645,7 @@ get_s2a_ndvi <- function(bbox = NULL, place = NULL, datetime = c(),
           band_list[[d]][[b]] <- terra::crop(band_list[[d]][[b]], bbox_vect)
         }
       }
-      ndvi_list <- band_list
+      ndvi_list[[d]] <- terra::rast(band_list[[d]][output_bands])
     } else {
       ndvi_collection <- terra::sprc(ndvi_list[[d]])
       ndvi_mosaic <- terra::mosaic(ndvi_collection, fun = method)
@@ -523,6 +682,7 @@ get_s2a_ndvi <- function(bbox = NULL, place = NULL, datetime = c(),
 #' Can be a list of length-2 numeric vectors (`list(c(lon, lat))`),
 #' a 2-column matrix or data.frame, or an `sf` object with POINT geometry in any CRS.
 #' @param time numeric or vector. The time of interest. See Detail.
+#' @param year numeric or vector. Deprecated alias for `time`.
 #' @param source character. The data source for extracting greenspace values:
 #' `gsdc` for Greenspace Seasonality Data Cube (also see [get_gsdc()]]),
 #' `esa_ndvi`or `esa_landcover` for ESA WorldCover 10m Annual Dataset
@@ -558,17 +718,17 @@ get_s2a_ndvi <- function(bbox = NULL, place = NULL, datetime = c(),
 #' cities and their boundaries.
 #'
 #' @examples
+#' \dontrun{
 #' # see supported urban areas and their boundaries
 #' check_available_urban()
-#' boundary <- check_urban_boundary(uid = 11)
+#' boundary <- check_urban_boundary(uid = 11, plot = FALSE)
 #'
-#' # sample locations with in the boundary
+#' # sample locations within the boundary
 #' samples <- sf::st_sample(boundary, size = 20)
 #'
 #' # extract values
-#' gs_samples <- sample_values(samples,
-#'                             # time = 2022
-#'                            )
+#' gs_samples <- sample_values(samples, time = 2022)
+#' }
 #'
 #' @references
 #' Wu, S., Song, Y., An, J. et al. High-resolution greenspace dynamic
@@ -591,11 +751,14 @@ get_s2a_ndvi <- function(bbox = NULL, place = NULL, datetime = c(),
 #' @importFrom sf st_drop_geometry
 #' @importFrom terra extract vect
 #' @export
-sample_values <- function(samples = NULL, time = NULL,
+sample_values <- function(samples = NULL, time = NULL, year = NULL,
                           source = 'gsdc', output_bands = NULL,
                           cloud_cover = 10, vege_perc = 0,
                           select = "latest", method = 'first',
                           quiet = TRUE) {
+  if (is.null(time) && !is.null(year)) {
+    time <- year
+  }
   if (is.null(time)) {
     return(NULL)
   }
@@ -655,7 +818,7 @@ sample_values <- function(samples = NULL, time = NULL,
 
   # Combine with coordinates (omit ID column)
   result <- sf::st_drop_geometry(sf_points)
-  result <- cbind(result, values[,-1])
+  result <- cbind(result, values[, -1, drop = FALSE])
 
   return(result)
 }
@@ -826,4 +989,3 @@ get_tile_green <- function(bbox = NULL,
   report_time(start_time)
   return(output)
 }
-

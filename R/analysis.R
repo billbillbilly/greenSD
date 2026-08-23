@@ -93,7 +93,13 @@ compute_exposure <- function(r = NULL,
 
   # ---------- 1) Prep AOI and Population ----------
   bbox_wgs84 <- sf::st_as_sfc(sf::st_bbox(as.vector(terra::ext(r))))
-  sf::st_crs(bbox_wgs84) <- 4326
+  input_crs <- terra::crs(r)
+  if (is.na(input_crs) || input_crs == "") {
+    base::warning("Input raster has no CRS; assuming EPSG:4326.")
+    sf::st_crs(bbox_wgs84) <- 4326
+  } else {
+    sf::st_crs(bbox_wgs84) <- input_crs
+  }
   bbox_wgs84 <- sf::st_transform(bbox_wgs84, crs = 4326)
 
   # download GHSL population covering the greenspace raster extent (WGS84)
@@ -158,19 +164,20 @@ compute_exposure <- function(r = NULL,
   # ---------- 5) Population-weight each pixel (P_i * G_i^d) ----------
   cli::cli_alert_info("Weighting by population...")
   PW_stack <- G_stack * pop_m
-  terra::set.names(PW_stack, paste0("pwgf_", seq_len(n_layers)))
+  terra::set.names(PW_stack, paste0("pw_numerator_", seq_len(n_layers)))
 
   # Optionally include population as a layer
-  if (isTRUE(pop_out)) {
-    PW_stack <- c(PW_stack, pop_m)
-    terra::set.names(PW_stack, c(terra::names(PW_stack)[seq_len(n_layers)], "population"))
-  }
-
   # ---------- 6) Optional aggregation to a grid (PWGE) ----------
   if (is.null(grid_size)) {
     cli::cli_alert_info("Returning per-cell population-weighted greenspace layers (pwgf_*).")
+    out_stack <- G_stack
+    terra::set.names(out_stack, paste0("pwgf_", seq_len(n_layers)))
+    if (isTRUE(pop_out)) {
+      out_stack <- c(out_stack, pop_m)
+      terra::set.names(out_stack, c(terra::names(out_stack)[seq_len(n_layers)], "population"))
+    }
     if (exists("report_time", mode = "function")) report_time(start_time)
-    return(PW_stack)
+    return(out_stack)
   }
 
   cli::cli_alert_info("Aggregating to regular grid and computing PWGE ...")

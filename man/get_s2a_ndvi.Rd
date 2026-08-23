@@ -63,8 +63,10 @@ download Sentinel-2-l2a imagery data and compute NDVI.
 Users can define an area of interest using a bounding box or place name.
 }
 \examples{
+\donttest{
 result <- get_s2a_ndvi(
-  # place = 'New York',
+  place = 'New York',
   datetime = c("2020-08-01", "2020-09-01")
 )
+}
 }

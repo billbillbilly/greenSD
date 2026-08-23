@@ -9,3 +9,14 @@ testthat::test_that("runs correctly", {
   testthat::expect_type(band_index, "integer")
   testthat::expect_type(gif, "externalptr")
 })
+
+testthat::test_that("EOX WMS XML uses independent x and y dimensions", {
+  xml <- greenSD:::write_eox_wms_xml(
+    bbox = c(-83.0, 42.0, -82.0, 42.5),
+    year = 2024,
+    zoom = 10
+  )
+  sizex <- sub(".*<SizeX>([0-9]+)</SizeX>.*", "\\1", grep("SizeX", xml, value = TRUE))
+  sizey <- sub(".*<SizeY>([0-9]+)</SizeY>.*", "\\1", grep("SizeY", xml, value = TRUE))
+  testthat::expect_false(identical(sizex, sizey))
+})

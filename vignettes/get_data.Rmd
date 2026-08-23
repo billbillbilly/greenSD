@@ -25,20 +25,20 @@ gs <- greenSD::get_gsdc(place = 'Detroit', year = 2022)
 ### By coordinates (point)
 
 ```{r eval=FALSE}
-gs <- greenSD::get_gsdc(location = c(-83.10215 42.38342), year = 2022)
+gs <- greenSD::get_gsdc(location = c(-83.10215, 42.38342), year = 2022)
 ```
 
 ### By UID and time range
 
 ```{r eval=FALSE}
 # check UID 
-greenSD::check_available_cities()
+greenSD::check_available_urban()
 gs <- greenSD::get_gsdc(UID = 1825, year = 2022, time = c("03-01", "09-01"))
 ```
 
 # Download ESA WorldCover 10m Annual Dataset
 
-### Get NDVI data by place name 
+### Get NDVI data by place name
 
 ```{r eval=FALSE}
 ndvi <- greenSD::get_esa_wc(place = 'Detroit', datatype = "ndvi")
@@ -48,6 +48,47 @@ ndvi <- greenSD::get_esa_wc(place = 'Detroit', datatype = "ndvi")
 
 ```{r eval=FALSE}
 lc <- greenSD::get_esa_wc(place = 'Detroit', datatype = "landcover")
+```
+
+# Download Sentinel-2 10m Land Use/Land Cover Time Series
+
+The `datatype = "lulc"` option retrieves annual 9-class land use/land cover
+maps from the [Impact Observatory Sentinel-2 10m LULC Time Series](https://www.impactobservatory.com/maps-for-good/),
+hosted on a public AWS S3 bucket (no authentication required). Annual maps
+are available from 2017 to 2024, with a new year added each January.
+
+The 9 land cover classes are: Water (1), Trees (2), Flooded Vegetation (4),
+Crops (5), Built Area (7), Bare Ground (8), Snow/Ice (9), Clouds (10),
+Rangeland (11).
+
+### Get LULC data by place name
+
+```{r eval=FALSE}
+lulc <- greenSD::get_esa_wc(place = 'Detroit', datatype = "lulc", year = 2023)
+```
+
+### Get LULC data by bounding box
+
+```{r eval=FALSE}
+lulc <- greenSD::get_esa_wc(
+  bbox = c(-83.272828, 42.343950, -83.218926, 42.379719),
+  datatype = "lulc",
+  year = 2024
+)
+```
+
+### Compare land cover change across years
+
+```{r eval=FALSE}
+lulc_2017 <- greenSD::get_esa_wc(place = 'Detroit', datatype = "lulc", year = 2017)
+lulc_2023 <- greenSD::get_esa_wc(place = 'Detroit', datatype = "lulc", year = 2023)
+
+# Stack and compare
+lulc_change <- c(lulc_2017, lulc_2023)
+names(lulc_change) <- c("LULC_2017", "LULC_2023")
+
+# Simple pixel-level change map
+change_map <- lulc_2023 - lulc_2017
 ```
 
 # Retrieve Sentinel-2-l2a images and compute NDVI
@@ -81,7 +122,7 @@ within a city boundary.
 ```{r eval=FALSE}
 boundary <- greenSD::check_urban_boundary(uid = 1825, plot = FALSE)
 samples <- sf::st_sample(boundary, size = 50)
-gs_samples <- greenSD::sample_values(samples, year = 2022)
+gs_samples <- greenSD::sample_values(samples, time = 2022)
 ```
 
 # Visualize Seasonal Greenspace Dynamics as an Animated GIF
@@ -108,6 +149,5 @@ print(gif)
 # To save the GIF manually:
 magick::image_write(gif, "greenspace_animation.gif")
 ```
-
 
 
